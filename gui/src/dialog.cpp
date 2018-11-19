@@ -1,16 +1,16 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
-#include "../core_include/msg.h"
+#include "core_include/api.h"
+#include "core_include/rect.h"
+#include "core_include/cmd_target.h"
+#include "core_include/wnd.h"
+#include "core_include/msg.h"
+#include "core_include/surface.h"
+#include "core_include/resource.h"
+#include "core_include/bitmap.h"
+#include "core_include/word.h"
 #include "../gui_include/button.h"
-#include "../gui_include/font.h"
+#include "../gui_include/my_resource.h"
 #include "../gui_include/dialog.h"
-#include "../core_include/surface.h"
-#include "../gui_include/shape_resource.h"
-#include "../core_include/resource_type.h"
-#include "../core_include/bitmap.h"
-#include "../core_include/word.h"
+
 #include <string.h>
 
 DIALOG_ARRAY c_dialog::ms_the_dialogs[MAX_DIALOG];
@@ -18,7 +18,7 @@ void c_dialog::pre_create_wnd()
 {
 	m_style |= GLT_ATTR_VISIBLE|GLT_ATTR_FOCUS;
 	m_z_order = Z_ORDER_LEVEL_1;
-	m_bg_color = GLT_RGB(33,33,33);
+	m_bg_color = GL_RGB(33,33,33);
 }
 
 void c_dialog::on_paint()
@@ -35,13 +35,13 @@ void c_dialog::on_paint()
 	{
 		for ( unsigned int i = 0; i < m_divider_lines; i++ )
 		{
-			m_surface->draw_hline( rect.m_left + 35, rect.m_right - 35, rect.m_top + start_y + (i * interval), GLT_RGB(70, 73, 76), m_z_order);
+			m_surface->draw_hline( rect.m_left + 35, rect.m_right - 35, rect.m_top + start_y + (i * interval), GL_RGB(70, 73, 76), m_z_order);
 		}
 	}
 
-	if (m_str_id)
+	if (m_str)
 	{
-		c_word::draw_string(m_surface, m_z_order, m_str_id, rect.m_left+35, rect.m_top, FONT_ENG_MB_AA(), GLT_RGB(255, 255, 255), COLOR_TRANPARENT, ALIGN_LEFT);
+		c_word::draw_string(m_surface, m_z_order, m_str, rect.m_left+35, rect.m_top, c_my_resource::get_font(FONT_ENG_MB), GL_RGB(255, 255, 255), GL_ARGB(0, 0, 0, 0), ALIGN_LEFT);
 	}
 }
 

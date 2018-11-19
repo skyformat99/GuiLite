@@ -18,6 +18,39 @@
 #define MAX_TIMER_CNT 10
 #define TIMER_UNIT 50//ms
 
+static void(*do_assert)(const char* file, int line);
+static void(*do_log_out)(const char* log);
+void register_debug_function(void(*my_assert)(const char* file, int line), void(*my_log_out)(const char* log))
+{
+	do_assert = my_assert;
+	do_log_out = my_log_out;
+}
+
+void _assert(const char* file, int line)
+{
+	if(do_assert)
+	{
+		do_assert(file, line);
+	}
+	else
+	{
+		printf("assert@ file:%s, line:%d, error no: %d\n", file, line, errno);
+	} 
+}
+
+void log_out(const char* log)
+{
+	if (do_log_out)
+	{
+		do_log_out(log);
+	}
+	else
+	{
+		printf(log);
+		fflush(stdout);
+	}
+}
+
 typedef struct _timer_manage
 {
     struct  _timer_info
@@ -157,7 +190,7 @@ void start_real_timer(void (*func)(void* arg))
 
 unsigned int get_cur_thread_id()
 {
-	return pthread_self();
+	return (unsigned long)pthread_self();
 }
 
 void register_timer(int milli_second,void func(void* ptmr, void* parg))
@@ -203,7 +236,7 @@ T_TIME second_to_day(long second)
 
 void create_thread(unsigned long* thread_id, void* attr, void *(*start_routine) (void *), void* arg)
 {
-    pthread_create(thread_id, attr, start_routine, arg);
+    pthread_create((pthread_t*)thread_id, (pthread_attr_t const*)attr, start_routine, arg);
 }
 
 void thread_sleep(unsigned int milli_seconds)
